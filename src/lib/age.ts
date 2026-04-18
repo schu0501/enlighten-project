@@ -1,6 +1,30 @@
 export function parseCalendarDate(calendarDate: string) {
-  const [year, month, day] = calendarDate.split('-').map((part) => Number(part));
-  return new Date(year, month - 1, day);
+  const parts = calendarDate.split('-');
+
+  if (parts.length !== 3) {
+    throw new Error('Invalid calendar date');
+  }
+
+  const [yearPart, monthPart, dayPart] = parts;
+  const year = Number(yearPart);
+  const month = Number(monthPart);
+  const day = Number(dayPart);
+
+  if (!Number.isInteger(year) || !Number.isInteger(month) || !Number.isInteger(day)) {
+    throw new Error('Invalid calendar date');
+  }
+
+  const date = new Date(year, month - 1, day);
+
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    throw new Error('Invalid calendar date');
+  }
+
+  return date;
 }
 
 export function formatCalendarDate(date: Date) {

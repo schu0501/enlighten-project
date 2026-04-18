@@ -1,7 +1,11 @@
 import { expect, test } from "@playwright/test";
 
+import { getAgeLabelInChinese, parseCalendarDate } from "../../src/lib/age";
+
 const runId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 const email = `parent-${runId}@example.com`;
+const birthDate = parseCalendarDate("2023-08-01");
+const expectedAge = getAgeLabelInChinese(birthDate);
 
 test("parent can register and save a child's birth date", async ({ page }) => {
   await page.goto("/register");
@@ -13,5 +17,5 @@ test("parent can register and save a child's birth date", async ({ page }) => {
   await page.getByRole("button", { name: "创建档案并开始" }).click();
 
   await expect(page).toHaveURL("/today");
-  await expect(page.getByText("小米 · 2岁8个月")).toBeVisible();
+  await expect(page.getByText(`小米 · ${expectedAge}`)).toBeVisible();
 });

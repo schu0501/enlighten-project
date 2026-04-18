@@ -10,7 +10,7 @@ import { parseCalendarDate } from '@/lib/age';
 const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8),
-  nickname: z.string().min(1),
+  nickname: z.preprocess((value) => (typeof value === 'string' ? value.trim() : value), z.string().min(1)),
   birthDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
 });
 
@@ -38,12 +38,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ message: '这个邮箱已经注册过了。' }, { status: 409 });
   }
 
+  let birthDate: Date;
+
+  try {
+    birthDate = parseCalendarDate(parsed.data.birthDate);
+  } catch {
+    return NextResponse.json({ message: '出生日期不合法。' }, { status: 400 });
+  }
+
   try {
     await createParentWithChild({
       email,
       password: parsed.data.password,
       nickname: parsed.data.nickname,
-      birthDate: parseCalendarDate(parsed.data.birthDate),
+      birthDate,
     });
   } catch (error) {
     if (isUniqueConstraintError(error)) {
