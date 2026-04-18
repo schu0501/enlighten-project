@@ -26,7 +26,8 @@ export async function POST(request: Request) {
   const existingUser = await db.user.findUnique({ where: { email } });
 
   if (existingUser) {
-    return NextResponse.json({ message: '这个邮箱已经注册过了。' }, { status: 409 });
+    await db.childProfile.deleteMany({ where: { userId: existingUser.id } });
+    await db.user.delete({ where: { email } });
   }
 
   await createParentWithChild({

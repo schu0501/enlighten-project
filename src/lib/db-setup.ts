@@ -19,7 +19,6 @@ const statements = [
   '  updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,',
   '  FOREIGN KEY (userId) REFERENCES "User"(id) ON DELETE CASCADE',
   ');',
-  'CREATE UNIQUE INDEX IF NOT EXISTS "ChildProfile_userId_isPrimary_key" ON "ChildProfile"(userId, isPrimary);',
   'CREATE INDEX IF NOT EXISTS "ChildProfile_userId_idx" ON "ChildProfile"(userId);',
 ];
 

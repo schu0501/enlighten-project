@@ -11,7 +11,7 @@ export default defineConfig({
   },
   webServer: {
     cwd: 'C:/develop/enlighten-project/.worktrees/codex/parent-guided-mvp',
-    command: 'node tests/e2e/server.cjs',
+    command: 'npm run dev',
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: true,
     timeout: 120000,
