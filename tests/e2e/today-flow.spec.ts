@@ -31,4 +31,7 @@ test('homepage links into today and then task detail', async ({ page }) => {
   await expect(page).toHaveURL(/\/tasks\/[a-z0-9-]+/);
   await expect(page.getByText(textFromCodes(0x600e, 0x4e48, 0x5f00, 0x59cb))).toBeVisible();
   await expect(page.getByText(offlineLabel)).toBeVisible();
+
+  await page.getByRole('button', { name: 'Make it a story' }).click();
+  await expect(page.getByRole('status')).toContainText('Here is a story version');
 });

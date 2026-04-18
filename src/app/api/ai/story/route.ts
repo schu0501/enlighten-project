@@ -1,0 +1,25 @@
+import { NextResponse } from 'next/server';
+import { z } from 'zod';
+
+import { buildAiPrompt, generateAiText } from '../../../../lib/ai-prompts';
+
+const storySchema = z.object({
+  childNickname: z.string().trim().min(1),
+  taskTitle: z.string().trim().min(1),
+  taskDescription: z.string().trim().min(1),
+  taskTopic: z.string().trim().min(1),
+});
+
+export async function POST(request: Request) {
+  const body = await request.json();
+  const parsed = storySchema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json({ message: 'Please provide child and task details.' }, { status: 400 });
+  }
+
+  const prompt = buildAiPrompt('story', parsed.data);
+  const text = generateAiText('story', parsed.data);
+
+  return NextResponse.json({ kind: 'story', mode: 'deterministic', prompt, text });
+}
