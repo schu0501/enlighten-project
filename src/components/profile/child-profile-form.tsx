@@ -92,7 +92,11 @@ export function ChildProfileForm() {
         <input
           className='rounded-2xl border border-stone-300 bg-white px-4 py-3 text-base outline-none transition focus:border-stone-900'
           name='birthDate'
-          type='date'
+          type='text'
+          inputMode='numeric'
+          placeholder='YYYY-MM-DD'
+          pattern='\d{4}-\d{2}-\d{2}'
+          title='请按 YYYY-MM-DD 格式填写，例如 2023-08-01'
           required
         />
       </label>
