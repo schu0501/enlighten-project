@@ -1,60 +1,75 @@
 import Link from 'next/link';
 
-import { auth } from '@/lib/auth';
-import { db } from '@/lib/db';
-import { ensureDatabase } from '@/lib/db-setup';
-import { getAgeLabelInChinese } from '@/lib/age';
+import { AppShell } from '../../../components/layout/app-shell';
+import { BackupTaskList } from '../../../components/today/backup-task-list';
+import { TodayCard } from '../../../components/today/today-card';
+import { getTodayPageData } from '../../../server/tasks';
+
+const TODAY_TITLE = String.fromCodePoint(0x4eca, 0x65e5, 0x966a, 0x4f34);
+const TODAY_EMPTY_NOTE = String.fromCodePoint(
+  0x5148,
+  0x5efa,
+  0x7acb,
+  0x5b69,
+  0x5b50,
+  0x6863,
+  0x6848,
+  0xff0c,
+  0x518d,
+  0x7ed9,
+  0x4f60,
+  0x4e00,
+  0x4e2a,
+  0x8f7b,
+  0x91cf,
+  0x3001,
+  0x53ef,
+  0x5b8c,
+  0x6210,
+  0x7684,
+  0x4eca,
+  0x65e5,
+  0x4efb,
+  0x52a1,
+  0x3002,
+);
+const TODAY_EMPTY_CTA = String.fromCodePoint(0x53bb, 0x521b, 0x5efa, 0x6863, 0x6848);
+const TODAY_LEAD = String.fromCodePoint(0x8f7b, 0x4e00, 0x70b9, 0x3001, 0x77ed, 0x4e00, 0x70b9, 0x3001, 0x73b0, 0x5728, 0x5c31, 0x80fd, 0x5f00, 0x59cb, 0x3002);
+const CHILD_RECORD_LINK = String.fromCodePoint(0x53bb, 0x770b, 0x770b, 0x5b69, 0x5b50, 0x6863, 0x6848);
 
 export default async function TodayPage() {
-  const session = await auth();
-  const email = session?.user?.email;
+  const data = await getTodayPageData();
 
-  await ensureDatabase(db);
-
-  const child = email
-    ? await db.childProfile.findFirst({
-        where: {
-          isPrimary: true,
-          user: {
-            email,
-          },
-        },
-      })
-    : null;
-
-  if (!child) {
+  if (!data) {
     return (
-      <main className='mx-auto flex min-h-screen max-w-3xl flex-col gap-4 px-6 py-12'>
-        <h1 className='text-4xl font-bold tracking-tight text-stone-900'>今日陪伴</h1>
-        <p className='text-lg leading-8 text-stone-700'>
-          先创建或登录家长账号，再保存孩子生日，系统就能按年龄展示陪伴建议。
-        </p>
-        <Link className='text-stone-900 underline underline-offset-4' href='/register'>
-          去创建档案
-        </Link>
-      </main>
+      <AppShell>
+        <section className='grid gap-4 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm'>
+          <p className='text-sm font-semibold uppercase tracking-[0.28em] text-amber-700'>Parent-guided enlightenment</p>
+          <h1 className='text-4xl font-bold tracking-tight text-stone-900'>{TODAY_TITLE}</h1>
+          <p className='max-w-2xl text-lg leading-8 text-stone-700'>{TODAY_EMPTY_NOTE}</p>
+          <Link className='w-fit rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-white' href='/register'>
+            {TODAY_EMPTY_CTA}
+          </Link>
+        </section>
+      </AppShell>
     );
   }
 
-  const ageLabel = getAgeLabelInChinese(child.birthDate, new Date());
-
   return (
-    <main className='mx-auto flex min-h-screen max-w-3xl flex-col gap-6 px-6 py-12'>
+    <AppShell>
       <section className='grid gap-3'>
-        <h1 className='text-4xl font-bold tracking-tight text-stone-900'>今日陪伴</h1>
-        <p className='text-lg leading-8 text-stone-700'>
-          {child.nickname} · {ageLabel}
-        </p>
+        <p className='text-sm font-semibold uppercase tracking-[0.28em] text-amber-700'>Parent-guided enlightenment</p>
+        <h1 className='text-4xl font-bold tracking-tight text-stone-900'>{TODAY_TITLE}</h1>
+        <p className='max-w-2xl text-lg leading-8 text-stone-700'>{TODAY_LEAD}</p>
       </section>
-      <article className='rounded-3xl border border-stone-200 bg-white p-6 shadow-sm'>
-        <h2 className='text-2xl font-semibold tracking-tight text-stone-900'>先从一个 10 分钟的小任务开始</h2>
-        <p className='mt-3 text-base leading-7 text-stone-700'>
-          你现在可以围绕 {child.nickname} 的年龄，先做一个轻量、可完成的陪伴动作。
-        </p>
-      </article>
-      <Link className='text-stone-900 underline underline-offset-4' href='/profile'>
-        编辑孩子档案
-      </Link>
-    </main>
+      <p className='text-sm font-medium text-stone-500'>{data.childLabel}</p>
+      <TodayCard childLabel={data.childLabel} task={data.primaryTask} />
+      <BackupTaskList tasks={data.backupTasks} />
+      <p>
+        <Link className='text-sm font-medium text-stone-600 underline underline-offset-4' href='/profile'>
+          {CHILD_RECORD_LINK}
+        </Link>
+      </p>
+    </AppShell>
   );
 }
