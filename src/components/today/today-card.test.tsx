@@ -1,8 +1,10 @@
+// @vitest-environment jsdom
+import '@testing-library/jest-dom/vitest';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-import MarketingPage from '@/app/(marketing)/page';
+import MarketingPage from '../../app/(marketing)/page';
 
 describe('MarketingPage', () => {
   it('shows the parent-first value proposition and primary CTA', () => {
