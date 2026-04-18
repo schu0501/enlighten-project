@@ -15,6 +15,35 @@ const credentialsSchema = z.object({
 const saltLength = 16;
 const keyLength = 64;
 
+declare global {
+  // eslint-disable-next-line no-var
+  var __nextAuthDevSecret: string | undefined;
+}
+
+function isLocalAuthSecretAllowed() {
+  return (
+    process.env.NODE_ENV === 'development' ||
+    process.env.NODE_ENV === 'test' ||
+    (process.env.NODE_ENV !== 'production' && process.env.CI !== 'true') ||
+    process.env.NEXTAUTH_ALLOW_MISSING_SECRET === '1'
+  );
+}
+
+function resolveNextAuthSecret() {
+  const configuredSecret = process.env.NEXTAUTH_SECRET?.trim();
+
+  if (configuredSecret) {
+    return configuredSecret;
+  }
+
+  if (!isLocalAuthSecretAllowed()) {
+    throw new Error('NEXTAUTH_SECRET must be set outside local development and test environments.');
+  }
+
+  globalThis.__nextAuthDevSecret ??= crypto.randomBytes(32).toString('hex');
+  return globalThis.__nextAuthDevSecret;
+}
+
 export async function hashPassword(password: string) {
   const salt = crypto.randomBytes(saltLength).toString('hex');
   const derived = await new Promise<Buffer>((resolve, reject) => {
@@ -99,7 +128,7 @@ export async function getPrimaryChildForEmail(email: string) {
 }
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  secret: process.env.NEXTAUTH_SECRET ?? 'parent-guided-enlightenment-dev-secret',
+  secret: resolveNextAuthSecret(),
   session: {
     strategy: 'jwt',
   },

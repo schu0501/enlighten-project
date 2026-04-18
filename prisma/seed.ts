@@ -1,5 +1,6 @@
 import { db } from '../src/lib/db';
 import { createParentWithChild } from '../src/lib/auth';
+import { parseCalendarDate } from '../src/lib/age';
 
 async function main() {
   const email = 'demo@example.com';
@@ -21,7 +22,7 @@ async function main() {
     email,
     password: 'Password123!',
     nickname: '小米',
-    birthDate: new Date('2023-08-01T00:00:00.000Z'),
+    birthDate: parseCalendarDate('2023-08-01'),
   });
 
   console.log('Seeded demo parent account: demo@example.com');

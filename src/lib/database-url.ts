@@ -9,32 +9,40 @@ function toFileUrl(filePath: string) {
   return `file:${filePath.replace(/\\/g, '/')}`;
 }
 
-export function getStableDatabaseUrl() {
-  const fallbackPath = fallbackDatabasePath();
-  const fallbackUrl = toFileUrl(fallbackPath);
-  const configuredUrl = process.env.DATABASE_URL?.trim();
-
-  if (!configuredUrl || configuredUrl.startsWith('file:./') || configuredUrl.startsWith('file:../')) {
-    return fallbackUrl;
-  }
-
-  if (configuredUrl.startsWith('file:')) {
-    const configuredPath = configuredUrl.slice('file:'.length);
+function resolveDatabaseFilePath(databaseUrl: string) {
+  if (databaseUrl.startsWith('file:')) {
+    const configuredPath = databaseUrl.slice('file:'.length);
 
     if (configuredPath.startsWith('/')) {
-      return toFileUrl(configuredPath);
+      return configuredPath;
     }
 
     if (/^[A-Za-z]:[\\/]/.test(configuredPath)) {
-      return toFileUrl(configuredPath);
+      return configuredPath;
     }
+
+    return resolve(process.cwd(), configuredPath);
   }
 
-  return fallbackUrl;
+  if (/^[A-Za-z]:[\\/]/.test(databaseUrl) || databaseUrl.startsWith('/')) {
+    return databaseUrl;
+  }
+
+  return resolve(process.cwd(), databaseUrl);
+}
+
+export function getStableDatabaseUrl() {
+  const configuredUrl = process.env.DATABASE_URL?.trim();
+
+  if (configuredUrl) {
+    return configuredUrl;
+  }
+
+  return toFileUrl(fallbackDatabasePath());
 }
 
 export function ensureDatabaseFile() {
-  const databasePath = fallbackDatabasePath();
+  const databasePath = resolveDatabaseFilePath(getStableDatabaseUrl());
   mkdirSync(dirname(databasePath), { recursive: true });
 
   if (!existsSync(databasePath)) {

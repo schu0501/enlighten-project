@@ -1,9 +1,7 @@
-import Link from 'next/link';
-
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { ensureDatabase } from '@/lib/db-setup';
-import { getAgeLabelInChinese } from '@/lib/age';
+import { formatCalendarDate, getAgeLabelInChinese } from '@/lib/age';
 
 export default async function ProfilePage() {
   const session = await auth();
@@ -41,11 +39,9 @@ export default async function ProfilePage() {
             <p className='text-lg text-stone-700'>
               {child.nickname} · {getAgeLabelInChinese(child.birthDate, new Date())}
             </p>
-            <p className='text-sm text-stone-600'>出生日期：{child.birthDate.toISOString().slice(0, 10)}</p>
+            <p className='text-sm text-stone-600'>出生日期：{formatCalendarDate(child.birthDate)}</p>
           </div>
-          <p className='text-sm text-stone-600'>
-            家长账号：{child.user.email}
-          </p>
+          <p className='text-sm text-stone-600'>家长账号：{child.user.email}</p>
         </section>
       ) : (
         <section className='grid gap-3 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm'>
@@ -55,9 +51,6 @@ export default async function ProfilePage() {
           </p>
         </section>
       )}
-      <Link className='text-stone-900 underline underline-offset-4' href='/today'>
-        返回今日陪伴
-      </Link>
     </main>
   );
 }
