@@ -2,11 +2,14 @@ import Link from 'next/link';
 
 import { auth } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { ensureDatabase } from '@/lib/db-setup';
 import { getAgeLabelInChinese } from '@/lib/age';
 
 export default async function TodayPage() {
   const session = await auth();
   const email = session?.user?.email;
+
+  await ensureDatabase(db);
 
   const child = email
     ? await db.childProfile.findFirst({

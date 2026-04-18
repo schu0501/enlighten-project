@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import { createParentWithChild } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { ensureDatabase } from '@/lib/db-setup';
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -12,6 +13,8 @@ const registerSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  await ensureDatabase(db);
+
   const body = await request.json();
   const parsed = registerSchema.safeParse(body);
 
@@ -26,8 +29,7 @@ export async function POST(request: Request) {
   const existingUser = await db.user.findUnique({ where: { email } });
 
   if (existingUser) {
-    await db.childProfile.deleteMany({ where: { userId: existingUser.id } });
-    await db.user.delete({ where: { email } });
+    return NextResponse.json({ message: '这个邮箱已经注册过了。' }, { status: 409 });
   }
 
   await createParentWithChild({

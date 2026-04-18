@@ -1,9 +1,12 @@
 import { expect, test } from "@playwright/test";
 
+const runId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+const email = `parent-${runId}@example.com`;
+
 test("parent can register and save a child's birth date", async ({ page }) => {
   await page.goto("/register");
 
-  await page.getByLabel("邮箱").fill("parent@example.com");
+  await page.getByLabel("邮箱").fill(email);
   await page.getByLabel("密码").fill("Password123!");
   await page.getByLabel("孩子昵称").fill("小米");
   await page.getByLabel("出生日期").fill("2023-08-01");

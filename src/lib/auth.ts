@@ -5,6 +5,7 @@ import NextAuth from 'next-auth';
 import { z } from 'zod';
 
 import { db } from '@/lib/db';
+import { ensureDatabase } from '@/lib/db-setup';
 
 const credentialsSchema = z.object({
   email: z.string().email(),
@@ -58,6 +59,8 @@ export async function createParentWithChild(input: {
   nickname: string;
   birthDate: Date;
 }) {
+  await ensureDatabase(db);
+
   const email = input.email.trim().toLowerCase();
   const passwordHash = await hashPassword(input.password);
 
@@ -80,6 +83,8 @@ export async function createParentWithChild(input: {
 }
 
 export async function getPrimaryChildForEmail(email: string) {
+  await ensureDatabase(db);
+
   return db.childProfile.findFirst({
     where: {
       isPrimary: true,
@@ -108,6 +113,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: '密码', type: 'password' },
       },
       authorize: async (credentials) => {
+        await ensureDatabase(db);
+
         const parsed = credentialsSchema.safeParse(credentials);
 
         if (!parsed.success) {
