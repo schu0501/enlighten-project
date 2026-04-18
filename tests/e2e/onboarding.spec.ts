@@ -17,5 +17,5 @@ test("parent can register and save a child's birth date", async ({ page }) => {
   await page.getByRole("button", { name: "创建档案并开始" }).click();
 
   await expect(page).toHaveURL("/today");
-  await expect(page.getByText(`小米 · ${expectedAge}`)).toBeVisible();
+  await expect(page.locator("main > p").first()).toHaveText(`小米 · ${expectedAge}`);
 });
