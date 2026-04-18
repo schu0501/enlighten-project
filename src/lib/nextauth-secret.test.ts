@@ -13,16 +13,20 @@ afterEach(() => {
 });
 
 describe('resolveNextAuthSecret', () => {
-  it('generates a local build secret when no shared environment is detected', () => {
+  it('generates a stable local build secret when no shared environment is detected', () => {
     vi.stubEnv('NODE_ENV', 'production');
     vi.stubEnv('CI', '');
     vi.stubEnv('VERCEL', '');
     vi.stubEnv('VERCEL_ENV', '');
+    vi.stubEnv('DATABASE_URL', 'file:./prisma/dev.db');
 
-    const secret = resolveNextAuthSecret();
+    const firstSecret = resolveNextAuthSecret();
+    delete globalThis.__nextAuthDevSecret;
+    const secondSecret = resolveNextAuthSecret();
 
-    expect(secret).toHaveLength(64);
-    expect(secret).not.toBe('');
+    expect(firstSecret).toHaveLength(64);
+    expect(firstSecret).not.toBe('');
+    expect(firstSecret).toBe(secondSecret);
   });
 
   it('fails closed in a shared production environment without a configured secret', () => {

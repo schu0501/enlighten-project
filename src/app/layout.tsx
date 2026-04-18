@@ -7,7 +7,7 @@ import './globals.css';
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='zh-CN'>
-      <body className='min-h-screen bg-stone-50 text-stone-900 antialiased'>
+      <body className='min-h-screen antialiased'>
         <TopNav />
         {children}
       </body>

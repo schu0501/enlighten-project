@@ -38,21 +38,21 @@ const COMPLETION_NOTE = String.fromCodePoint(
 
 export function TodayCard({ childLabel, task }: TodayCardProps) {
   return (
-    <article className='grid gap-5 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm'>
-      <div className='flex flex-wrap items-center gap-3 text-sm text-stone-500'>
-        <span className='rounded-full bg-amber-50 px-3 py-1 font-medium text-amber-900'>{childLabel}</span>
-        <span className='rounded-full bg-stone-100 px-3 py-1 font-medium text-stone-600'>{task.topic}</span>
-        <span className='rounded-full bg-stone-100 px-3 py-1 font-medium text-stone-600'>{task.durationMinutes} 分钟</span>
+    <article className='surface-panel grid gap-6 p-7 sm:p-8'>
+      <div className='flex flex-wrap items-center gap-3 text-sm'>
+        <span className='soft-tag soft-tag--accent'>{childLabel}</span>
+        <span className='soft-tag'>{task.topic}</span>
+        <span className='soft-tag'>{task.durationMinutes} 分钟</span>
       </div>
       <div className='grid gap-3'>
-        <h2 className='text-2xl font-semibold tracking-tight text-stone-900'>{task.title}</h2>
-        <p className='text-base leading-7 text-stone-700'>{task.description}</p>
+        <h2 className='section-title'>{task.title}</h2>
+        <p className='section-copy text-base'>{task.description}</p>
       </div>
       <div className='flex flex-wrap items-center gap-4'>
-        <Link className='rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-stone-800' href={task.href}>
+        <Link className='primary-button' href={task.href}>
           {START_LABEL}
         </Link>
-        <p className='text-sm leading-6 text-stone-500'>{COMPLETION_NOTE}</p>
+        <p className='max-w-xl text-sm leading-7 text-[color:var(--text-faint)]'>{COMPLETION_NOTE}</p>
       </div>
     </article>
   );

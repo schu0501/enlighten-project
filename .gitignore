@@ -3,5 +3,6 @@
 node_modules/
 test-results/
 prisma/dev.db
-.env
+.env*
+!.env.example
 tsconfig.tsbuildinfo

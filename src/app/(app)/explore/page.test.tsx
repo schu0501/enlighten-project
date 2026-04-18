@@ -16,10 +16,14 @@ describe('ExplorePage', () => {
     vi.mocked(getPrimaryChildProfile).mockResolvedValue({
       id: 'child-1',
       nickname: '小米',
+      gender: 'girl',
+      genderLabel: '女孩',
       birthDate: new Date('2023-08-01'),
       ageLabel: '2岁8个月',
       birthDateLabel: '2023-08-01',
       userEmail: 'parent@example.com',
+      interestTags: ['动物'],
+      developmentSignalTags: ['开始说短句'],
       stage: {
         stageKey: 'toddler',
         stageLabel: '幼儿启蒙期',

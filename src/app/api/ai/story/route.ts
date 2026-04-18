@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   const parsed = storySchema.safeParse(body);
 
   if (!parsed.success) {
-    return NextResponse.json({ message: 'Please provide child and task details.' }, { status: 400 });
+    return NextResponse.json({ message: '请先提供孩子昵称和任务信息。' }, { status: 400 });
   }
 
   const prompt = buildAiPrompt('story', parsed.data);

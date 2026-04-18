@@ -11,10 +11,10 @@ export default async function ExplorePage() {
 
   return (
     <AppShell>
-      <section className='grid gap-3'>
-        <p className='text-sm font-semibold uppercase tracking-[0.28em] text-amber-700'>Parent-guided enlightenment</p>
-        <h1 className='text-4xl font-bold tracking-tight text-stone-900'>探索</h1>
-        <p className='max-w-2xl text-lg leading-8 text-stone-700'>
+      <section className='page-hero'>
+        <p className='page-kicker'>Parent-guided enlightenment</p>
+        <h1 className='page-title text-[clamp(2.4rem,4.6vw,3.8rem)]'>探索</h1>
+        <p className='page-lead'>
           先看当前阶段，再挑一个轻量主题。我们尽量把探索压缩成父母能直接开始的短任务。
         </p>
       </section>
@@ -25,12 +25,12 @@ export default async function ExplorePage() {
           <TopicGrid topics={TOPICS} currentStageKey={profile.stage.stageKey} />
         </div>
       ) : (
-        <section className='grid gap-4 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm'>
-          <h2 className='text-2xl font-semibold tracking-tight text-stone-900'>先补一个孩子档案</h2>
-          <p className='text-stone-700'>
+        <section className='surface-panel grid gap-4 p-7 sm:p-8'>
+          <h2 className='section-title'>先补一个孩子档案</h2>
+          <p className='section-copy'>
             有了默认孩子之后，这里会自动展示更贴合年龄阶段的主题建议。
           </p>
-          <Link className='w-fit rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-white' href='/register'>
+          <Link className='primary-button w-fit' href='/register'>
             去创建档案
           </Link>
         </section>

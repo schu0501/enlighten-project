@@ -7,19 +7,19 @@ type StageSummaryProps = {
 
 export function StageSummary({ stage, childLabel }: StageSummaryProps) {
   return (
-    <section className='grid gap-4 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm'>
+    <section className='surface-panel grid gap-4 p-7 sm:p-8'>
       <div className='grid gap-2'>
-        <p className='text-sm font-semibold uppercase tracking-[0.28em] text-amber-700'>当前阶段建议</p>
-        <h2 className='text-2xl font-semibold tracking-tight text-stone-900'>{stage.stageLabel}</h2>
-        <p className='text-sm text-stone-500'>{childLabel}</p>
-        <p className='text-sm text-stone-500'>
+        <p className='page-kicker'>当前阶段建议</p>
+        <h2 className='section-title'>{stage.stageLabel}</h2>
+        <p className='text-sm text-[color:var(--text-faint)]'>{childLabel}</p>
+        <p className='text-sm text-[color:var(--text-faint)]'>
           适合 {stage.ageRangeMonths[0]}-{stage.ageRangeMonths[1]} 个月
         </p>
       </div>
-      <p className='text-base leading-7 text-stone-700'>{stage.summary}</p>
+      <p className='section-copy text-base'>{stage.summary}</p>
       <div className='flex flex-wrap gap-2'>
         {stage.focusAreas.map((area) => (
-          <span key={area} className='rounded-full bg-stone-100 px-3 py-1 text-sm font-medium text-stone-700'>
+          <span key={area} className='soft-tag'>
             {area}
           </span>
         ))}

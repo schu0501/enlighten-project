@@ -4,6 +4,12 @@ import React from 'react';
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({
+    refresh: vi.fn(),
+  }),
+}));
+
 vi.mock('../src/server/profile', () => ({
   getPrimaryChildProfile: vi.fn(),
 }));
@@ -15,10 +21,14 @@ import { getPrimaryChildProfile } from '../src/server/profile';
 const profileFixture = {
   id: 'child-1',
   nickname: '小米',
+  gender: 'girl',
+  genderLabel: '女孩',
   birthDate: new Date('2023-08-01'),
   ageLabel: '2岁8个月',
   birthDateLabel: '2023-08-01',
   userEmail: 'parent@example.com',
+  interestTags: ['动物'],
+  developmentSignalTags: ['开始说短句'],
   stage: {
     stageKey: 'toddler' as const,
     stageLabel: '幼儿启蒙期',
@@ -53,7 +63,7 @@ describe('ProfilePage', () => {
     render(await ProfilePage());
 
     expect(screen.getByRole('heading', { name: '我的档案' })).toBeInTheDocument();
-    expect(screen.getByText('当前默认孩子')).toBeInTheDocument();
+    expect(screen.getByText('当前阶段画像')).toBeInTheDocument();
     expect(screen.getByText('小米')).toBeInTheDocument();
     expect(screen.getByText('2023-08-01')).toBeInTheDocument();
     expect(screen.getByText('2岁8个月 · 幼儿启蒙期')).toBeInTheDocument();

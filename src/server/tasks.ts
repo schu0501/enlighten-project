@@ -1,6 +1,6 @@
 import { TASK_LIBRARY, type TaskLibraryItem } from '../content/task-library';
 import { getAgeLabelInChinese } from '../lib/age';
-import { auth, getPrimaryChildForEmail } from '../lib/auth';
+import { getPrimaryChildForEmail, readChildPreferenceTags, readSessionSafely } from '../lib/auth';
 import { getDailyRecommendation } from '../lib/recommendation';
 
 type TaskView = {
@@ -115,7 +115,7 @@ function buildPlaybook(task: TaskLibraryItem): Omit<TaskDetailData, 'childLabel'
 }
 
 async function getCurrentChild() {
-  const session = await auth();
+  const session = await readSessionSafely();
   const email = session?.user?.email;
 
   if (!email) {
@@ -132,15 +132,17 @@ export async function getTodayPageData(): Promise<TodayPageData | null> {
     return null;
   }
 
+  const preferenceTags = readChildPreferenceTags(child);
+
   const recommendation = getDailyRecommendation({
     birthDate: child.birthDate,
-    interests: [],
-    developmentSignals: [],
+    interests: preferenceTags.interestTags,
+    developmentSignals: preferenceTags.developmentSignalTags,
   });
   const rankedTasks = rankTasks(
     TASK_LIBRARY.filter((task) => task.stageKeys.includes(recommendation.stageKey)),
-    [],
-    [],
+    preferenceTags.interestTags,
+    preferenceTags.developmentSignalTags,
   );
 
   return {

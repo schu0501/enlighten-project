@@ -36,6 +36,16 @@ function isLocalAuthSecretAllowed() {
   return !hasSharedRuntimeIndicator();
 }
 
+function createStableLocalSecret() {
+  const seed = [
+    'parent-guided-enlightenment',
+    process.cwd(),
+    process.env.DATABASE_URL?.trim() ?? '',
+  ].join('::');
+
+  return crypto.createHash('sha256').update(seed).digest('hex');
+}
+
 export function resolveNextAuthSecret() {
   const configuredSecret = process.env.NEXTAUTH_SECRET?.trim();
 
@@ -47,7 +57,7 @@ export function resolveNextAuthSecret() {
     throw new Error('NEXTAUTH_SECRET must be set outside local development and test environments.');
   }
 
-  globalThis.__nextAuthDevSecret ??= crypto.randomBytes(32).toString('hex');
+  globalThis.__nextAuthDevSecret ??= createStableLocalSecret();
   return globalThis.__nextAuthDevSecret;
 }
 

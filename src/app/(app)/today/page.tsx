@@ -43,11 +43,11 @@ export default async function TodayPage() {
   if (!data) {
     return (
       <AppShell>
-        <section className='grid gap-4 rounded-3xl border border-stone-200 bg-white p-6 shadow-sm'>
-          <p className='text-sm font-semibold uppercase tracking-[0.28em] text-amber-700'>Parent-guided enlightenment</p>
-          <h1 className='text-4xl font-bold tracking-tight text-stone-900'>{TODAY_TITLE}</h1>
-          <p className='max-w-2xl text-lg leading-8 text-stone-700'>{TODAY_EMPTY_NOTE}</p>
-          <Link className='w-fit rounded-full bg-stone-900 px-5 py-3 text-sm font-semibold text-white' href='/register'>
+        <section className='surface-panel grid gap-4 p-7 sm:p-9'>
+          <p className='page-kicker'>Parent-guided enlightenment</p>
+          <h1 className='page-title text-[clamp(2.4rem,4.6vw,3.8rem)]'>{TODAY_TITLE}</h1>
+          <p className='page-lead'>{TODAY_EMPTY_NOTE}</p>
+          <Link className='primary-button w-fit' href='/register'>
             {TODAY_EMPTY_CTA}
           </Link>
         </section>
@@ -57,16 +57,16 @@ export default async function TodayPage() {
 
   return (
     <AppShell>
-      <section className='grid gap-3'>
-        <p className='text-sm font-semibold uppercase tracking-[0.28em] text-amber-700'>Parent-guided enlightenment</p>
-        <h1 className='text-4xl font-bold tracking-tight text-stone-900'>{TODAY_TITLE}</h1>
-        <p className='max-w-2xl text-lg leading-8 text-stone-700'>{TODAY_LEAD}</p>
+      <section className='page-hero'>
+        <p className='page-kicker'>Parent-guided enlightenment</p>
+        <h1 className='page-title text-[clamp(2.4rem,4.6vw,3.8rem)]'>{TODAY_TITLE}</h1>
+        <p className='page-lead'>{TODAY_LEAD}</p>
       </section>
-      <p className='text-sm font-medium text-stone-500'>{data.childLabel}</p>
+      <p className='text-sm font-medium tracking-[0.08em] text-[color:var(--text-faint)]'>{data.childLabel}</p>
       <TodayCard childLabel={data.childLabel} task={data.primaryTask} />
       <BackupTaskList tasks={data.backupTasks} />
       <p>
-        <Link className='text-sm font-medium text-stone-600 underline underline-offset-4' href='/profile'>
+        <Link className='soft-link text-sm font-medium' href='/profile'>
           {CHILD_RECORD_LINK}
         </Link>
       </p>

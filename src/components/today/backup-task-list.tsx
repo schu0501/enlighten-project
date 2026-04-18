@@ -22,19 +22,19 @@ export function BackupTaskList({ tasks }: BackupTaskListProps) {
 
   return (
     <section className='grid gap-4'>
-      <h2 className='text-xl font-semibold tracking-tight text-stone-900'>{BACKUP_LABEL}</h2>
+      <h2 className='section-title text-[clamp(1.5rem,3vw,1.9rem)]'>{BACKUP_LABEL}</h2>
       <div className='grid gap-3'>
         {tasks.map((task) => (
           <Link
             key={task.id}
-            className='grid gap-2 rounded-3xl border border-stone-200 bg-white p-5 shadow-sm transition hover:border-stone-300 hover:shadow'
+            className='surface-soft grid gap-3 p-5 transition hover:-translate-y-0.5 hover:border-[color:var(--line-strong)]'
             href={task.href}
           >
             <div className='flex flex-wrap items-center gap-3'>
-              <h3 className='text-lg font-semibold tracking-tight text-stone-900'>{task.title}</h3>
-              <span className='rounded-full bg-stone-100 px-3 py-1 text-xs font-semibold text-stone-600'>{task.durationMinutes} 分钟</span>
+              <h3 className='text-lg font-semibold tracking-tight text-[color:var(--text)]'>{task.title}</h3>
+              <span className='soft-tag text-xs'>{task.durationMinutes} 分钟</span>
             </div>
-            <p className='text-sm leading-6 text-stone-600'>{task.description}</p>
+            <p className='text-sm leading-7 text-[color:var(--text-soft)]'>{task.description}</p>
           </Link>
         ))}
       </div>
