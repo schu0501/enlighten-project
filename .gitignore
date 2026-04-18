@@ -1,1 +1,7 @@
 .worktrees/
+.next/
+node_modules/
+test-results/
+prisma/dev.db
+.env
+tsconfig.tsbuildinfo

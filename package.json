@@ -1,28 +1,29 @@
 {
   "dependencies": {
-    "next-auth": "^5.0.0-beta.25",
-    "tailwindcss": "^4.0.0",
     "@prisma/client": "^6.6.0",
-    "react": "^19.0.0",
-    "next": "^16.0.0",
-    "zod": "^3.24.0",
     "@tailwindcss/postcss": "^4.0.0",
-    "react-dom": "^19.0.0"
+    "next": "^16.0.0",
+    "next-auth": "^5.0.0-beta.25",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.0",
+    "zod": "^3.24.0"
   },
   "private": true,
   "devDependencies": {
-    "@types/react-dom": "^19.0.4",
-    "vitest": "^3.1.1",
-    "postcss": "^8.5.3",
+    "@playwright/test": "1.52.0",
     "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^16.0.1",
     "@types/node": "^22.14.0",
-    "jsdom": "^26.1.0",
     "@types/react": "^19.0.10",
+    "@types/react-dom": "^19.0.4",
+    "jsdom": "^26.1.0",
+    "playwright": "^1.52.0",
+    "postcss": "^8.5.3",
     "prisma": "^6.6.0",
     "tsx": "^4.19.3",
-    "playwright": "^1.52.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^3.1.1"
   },
   "name": "parent-guided-enlightenment",
   "scripts": {
