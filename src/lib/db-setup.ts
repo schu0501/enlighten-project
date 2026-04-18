@@ -1,0 +1,30 @@
+import { db } from './db.ts';
+
+const statements = [
+  'PRAGMA foreign_keys = ON;',
+  'CREATE TABLE IF NOT EXISTS "User" (',
+  '  id TEXT PRIMARY KEY NOT NULL,',
+  '  email TEXT NOT NULL UNIQUE,',
+  '  passwordHash TEXT NOT NULL,',
+  '  createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,',
+  '  updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP',
+  ');',
+  'CREATE TABLE IF NOT EXISTS "ChildProfile" (',
+  '  id TEXT PRIMARY KEY NOT NULL,',
+  '  userId TEXT NOT NULL,',
+  '  nickname TEXT NOT NULL,',
+  '  birthDate DATETIME NOT NULL,',
+  '  isPrimary INTEGER NOT NULL DEFAULT 1,',
+  '  createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,',
+  '  updatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,',
+  '  FOREIGN KEY (userId) REFERENCES "User"(id) ON DELETE CASCADE',
+  ');',
+  'CREATE UNIQUE INDEX IF NOT EXISTS "ChildProfile_userId_isPrimary_key" ON "ChildProfile"(userId, isPrimary);',
+  'CREATE INDEX IF NOT EXISTS "ChildProfile_userId_idx" ON "ChildProfile"(userId);',
+];
+
+export async function ensureDatabase() {
+  for (const statement of statements) {
+    await db.$executeRawUnsafe(statement);
+  }
+}
