@@ -69,48 +69,51 @@ export function ChildStageRadarCard({ profile, action, preferenceSummary }: Chil
     <section className='surface-panel overflow-hidden p-0'>
       <div className='grid gap-8 p-6 sm:p-8 lg:grid-cols-[1.2fr_0.8fr]'>
         <div className='grid gap-6'>
-          <div className='grid gap-3'>
-            <p className='page-kicker'>当前阶段画像</p>
-            <div className='flex flex-wrap items-center gap-2'>
-              <h2 className='section-title'>{profile.nickname}</h2>
-              {genderIcon}
-            </div>
-            {interestTags.length > 0 || developmentSignalTags.length > 0 ? (
-              <div className='flex flex-wrap gap-3 text-sm text-[color:var(--text-soft)]'>
-                {interestTags.length > 0 ? (
-                  <div className='flex flex-wrap items-center gap-2'>
-                    <span className='text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--text-faint)]'>兴趣</span>
-                    {interestTags.map((tag) => (
-                      <span key={tag} className='rounded-full bg-[rgba(255,248,240,0.92)] px-2.5 py-1 text-xs font-medium text-[color:var(--text-soft)]'>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                ) : null}
-                {developmentSignalTags.length > 0 ? (
-                  <div className='flex flex-wrap items-center gap-2'>
-                    <span className='text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--text-faint)]'>特点</span>
-                    {developmentSignalTags.map((tag) => (
-                      <span key={tag} className='rounded-full bg-[rgba(247,242,234,0.92)] px-2.5 py-1 text-xs font-medium text-[color:var(--text-soft)]'>
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                ) : null}
-              </div>
-            ) : null}
-            <p className='text-base text-[color:var(--text-soft)]'>{profile.ageLabel} · {profile.stage.stageLabel}</p>
-          </div>
-
           <div className='overflow-hidden rounded-[1.9rem] border border-[color:var(--line)] bg-[radial-gradient(circle_at_center,rgba(255,252,247,0.98)_0%,rgba(245,236,224,0.9)_56%,rgba(235,225,212,0.95)_100%)]'>
-            <div className='relative grid min-h-[21rem] place-items-center px-4 py-5'>
-              <div className='absolute inset-4 rounded-[1.6rem] border border-dashed border-[rgba(126,99,73,0.15)]' />
-              <div className='absolute inset-[22%] rounded-full border border-[rgba(126,99,73,0.12)]' />
-              <div className='absolute inset-[35%] rounded-full border border-[rgba(126,99,73,0.1)]' />
-              <div className='absolute left-1/2 top-4 h-[calc(100%-2rem)] w-px -translate-x-1/2 bg-[rgba(126,99,73,0.08)]' />
-              <div className='absolute top-1/2 left-4 h-px w-[calc(100%-2rem)] -translate-y-1/2 bg-[rgba(126,99,73,0.08)]' />
+            <div className='relative grid min-h-[30rem] grid-rows-[auto_1fr_auto] gap-6 px-6 py-7 sm:px-8'>
+              <div className='absolute inset-6 rounded-[1.75rem] border border-dashed border-[rgba(126,99,73,0.1)]' />
+              <div className='absolute inset-[19%] rounded-full border border-[rgba(126,99,73,0.08)]' />
+              <div className='absolute inset-[31%] rounded-full border border-[rgba(126,99,73,0.07)]' />
+              <div className='absolute left-1/2 top-6 h-[calc(100%-3rem)] w-px -translate-x-1/2 bg-[rgba(126,99,73,0.05)]' />
+              <div className='absolute top-1/2 left-6 h-px w-[calc(100%-3rem)] -translate-y-1/2 bg-[rgba(126,99,73,0.05)]' />
 
-              <article className='relative z-10 grid max-w-[15.5rem] gap-3 rounded-[1.65rem] border border-[rgba(126,99,73,0.16)] bg-[rgba(255,251,245,0.92)] px-5 py-5 text-center shadow-[0_24px_48px_-34px_rgba(84,63,43,0.5)]'>
+              <div className='relative z-10 grid gap-3 self-start'>
+                <p className='page-kicker'>当前阶段画像</p>
+                <div className='flex flex-wrap items-center gap-2'>
+                  <h2 className='section-title'>{profile.nickname}</h2>
+                  {genderIcon}
+                </div>
+                {interestTags.length > 0 || developmentSignalTags.length > 0 ? (
+                  <div className='flex flex-wrap gap-3 text-sm text-[color:var(--text-soft)]'>
+                    {interestTags.length > 0 ? (
+                      <div className='flex flex-wrap items-center gap-2'>
+                        <span className='text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--text-faint)]'>兴趣</span>
+                        {interestTags.map((tag) => (
+                          <span key={tag} className='rounded-full bg-[rgba(255,248,240,0.92)] px-2.5 py-1 text-xs font-medium text-[color:var(--text-soft)]'>
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+                    {developmentSignalTags.length > 0 ? (
+                      <div className='flex flex-wrap items-center gap-2'>
+                        <span className='text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--text-faint)]'>特点</span>
+                        {developmentSignalTags.map((tag) => (
+                          <span
+                            key={tag}
+                            className='rounded-full border border-[rgba(126,99,73,0.12)] bg-[rgba(255,248,240,0.92)] px-2.5 py-1 text-xs font-medium text-[color:var(--text-soft)]'
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
+                <p className='text-base text-[color:var(--text-soft)]'>{profile.ageLabel} · {profile.stage.stageLabel}</p>
+              </div>
+
+              <article className='relative z-10 mx-auto grid max-w-[14rem] place-self-center gap-3 rounded-[1.65rem] border border-[rgba(126,99,73,0.14)] bg-[rgba(255,251,245,0.9)] px-5 py-5 text-center shadow-[0_24px_48px_-36px_rgba(84,63,43,0.45)]'>
                 <span className='soft-tag soft-tag--accent mx-auto'>今天的陪伴中心</span>
                 <div className='grid gap-1'>
                   <h3 className='brand-mark text-2xl text-[color:var(--text)]'>{profile.stage.stageLabel}</h3>
@@ -118,22 +121,17 @@ export function ChildStageRadarCard({ profile, action, preferenceSummary }: Chil
                 </div>
               </article>
 
-              <div className='pointer-events-none absolute left-[8%] top-[15%] hidden max-w-[12rem] lg:block'>
-                  <div className='surface-soft p-4'>
-                    <p className='text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--text-faint)]'>现在更适合</p>
-                    <p className='mt-2 font-semibold text-[color:var(--text)]'>{focusAreas[0] ?? '陪伴节奏'}</p>
-                  </div>
+              <div className='relative z-10 grid gap-3 self-end rounded-[1.35rem] border border-[rgba(126,99,73,0.12)] bg-[rgba(255,250,243,0.82)] px-4 py-4 text-sm text-[color:var(--text-soft)] shadow-[0_18px_40px_-34px_rgba(84,63,43,0.38)] backdrop-blur-sm'>
+                <div className='flex flex-wrap items-center gap-3'>
+                  <span className='text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--text-faint)]'>出生日期</span>
+                  <span>{profile.birthDateLabel}</span>
+                  {action}
                 </div>
-              <div className='pointer-events-none absolute right-[8%] top-[19%] hidden max-w-[12rem] lg:block'>
-                <div className='surface-soft p-4'>
-                  <p className='text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--text-faint)]'>可以多留意</p>
-                  <p className='mt-2 font-semibold text-[color:var(--text)]'>{focusAreas[1] ?? '互动回应'}</p>
-                </div>
-              </div>
-              <div className='pointer-events-none absolute bottom-[13%] right-[10%] hidden max-w-[12rem] lg:block'>
-                <div className='surface-soft p-4'>
-                  <p className='text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--text-faint)]'>慢慢建立</p>
-                  <p className='mt-2 font-semibold text-[color:var(--text)]'>{focusAreas[2] ?? '观察探索'}</p>
+                <div className='flex flex-wrap items-center gap-3'>
+                  <span className='text-xs font-semibold uppercase tracking-[0.18em] text-[color:var(--text-faint)]'>适龄范围</span>
+                  <span>
+                    {profile.stage.ageRangeMonths[0]}-{profile.stage.ageRangeMonths[1]} 个月
+                  </span>
                 </div>
               </div>
             </div>
@@ -153,21 +151,8 @@ export function ChildStageRadarCard({ profile, action, preferenceSummary }: Chil
 
           <dl className='surface-inset grid gap-4 p-5 text-sm text-[color:var(--text-soft)]'>
             <div className='grid gap-1 sm:grid-cols-[5.5rem_1fr] sm:items-start'>
-              <dt className='font-medium text-[color:var(--text-faint)]'>出生日期</dt>
-              <dd className='flex flex-wrap items-center gap-3'>
-                <span>{profile.birthDateLabel}</span>
-                {action}
-              </dd>
-            </div>
-            <div className='grid gap-1 sm:grid-cols-[5.5rem_1fr] sm:items-start'>
               <dt className='font-medium text-[color:var(--text-faint)]'>家长账号</dt>
               <dd>{profile.userEmail}</dd>
-            </div>
-            <div className='grid gap-1 sm:grid-cols-[5.5rem_1fr] sm:items-start'>
-              <dt className='font-medium text-[color:var(--text-faint)]'>适龄范围</dt>
-              <dd>
-                {profile.stage.ageRangeMonths[0]}-{profile.stage.ageRangeMonths[1]} 个月
-              </dd>
             </div>
           </dl>
 

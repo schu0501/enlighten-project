@@ -43,7 +43,10 @@ describe('ChildBirthDateEditor', () => {
 
     fireEvent.click(screen.getByRole('button', { name: '编辑资料' }));
 
-    expect(screen.getByRole('dialog', { name: '编辑孩子资料' })).toBeInTheDocument();
+    const dialog = screen.getByRole('dialog', { name: '编辑孩子资料' });
+    expect(dialog).toBeInTheDocument();
+    expect(dialog.className).toContain('max-h-[calc(100dvh-2rem)]');
+    expect(dialog.className).toContain('overflow-y-auto');
     fireEvent.click(screen.getByRole('button', { name: '2023-08-01' }));
     fireEvent.click(screen.getByRole('button', { name: '2023-08-02' }));
     fireEvent.click(screen.getByRole('button', { name: '男孩' }));

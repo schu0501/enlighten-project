@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 
 import { DEVELOPMENT_SIGNAL_TAGS, INTEREST_TAGS } from '@/lib/child-tags';
@@ -42,6 +43,15 @@ export function ChildBirthDateEditor({
   const [developmentSignalTags, setDevelopmentSignalTags] = useState(initialDevelopmentSignalTags ?? []);
   const [status, setStatus] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+
+    return () => {
+      setMounted(false);
+    };
+  }, []);
 
   function resetForm() {
     setBirthDate(initialBirthDate);
@@ -98,83 +108,91 @@ export function ChildBirthDateEditor({
         编辑资料
       </button>
 
-      {isOpen ? (
-        <div className='fixed inset-0 z-40 grid place-items-center bg-[rgba(48,37,26,0.32)] p-4'>
-          <section role='dialog' aria-modal='true' aria-label='编辑孩子资料' className='surface-panel grid w-full max-w-2xl gap-5 p-6 sm:p-7'>
-            <div className='flex items-start justify-between gap-4'>
-              <div className='grid gap-2'>
-                <p className='page-kicker'>编辑孩子资料</p>
-                <h2 className='section-title text-[clamp(1.6rem,3vw,2rem)]'>调整 {nickname} 的画像资料</h2>
-                <p className='section-copy text-sm'>保存后会同步更新阶段画像和每日推荐。</p>
-              </div>
-              <button type='button' className='secondary-button px-3 py-1 text-sm' onClick={handleClose}>
-                关闭
-              </button>
-            </div>
-
-            <div className='grid gap-4'>
-              <div className='grid gap-2'>
-                <span className='text-sm font-medium text-[color:var(--text-soft)]'>性别</span>
-                <div className='flex flex-wrap gap-2'>
-                  {GENDER_OPTIONS.map((option) => (
-                    <button
-                      key={option.value}
-                      type='button'
-                      className={chipClassName(gender === option.value)}
-                      onClick={() => setGender(option.value)}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
+      {mounted && isOpen
+        ? createPortal(
+            <div className='fixed inset-0 z-40 grid overflow-y-auto bg-[rgba(48,37,26,0.32)] p-4 sm:place-items-center'>
+              <section
+                role='dialog'
+                aria-modal='true'
+                aria-label='编辑孩子资料'
+                className='surface-panel my-4 grid max-h-[calc(100dvh-2rem)] w-full max-w-2xl gap-5 self-start overflow-y-auto p-6 sm:my-0 sm:self-auto sm:p-7'
+              >
+                <div className='flex items-start justify-between gap-4'>
+                  <div className='grid gap-2'>
+                    <p className='page-kicker'>编辑孩子资料</p>
+                    <h2 className='section-title text-[clamp(1.6rem,3vw,2rem)]'>调整 {nickname} 的画像资料</h2>
+                    <p className='section-copy text-sm'>保存后会同步更新阶段画像和每日推荐。</p>
+                  </div>
+                  <button type='button' className='secondary-button px-3 py-1 text-sm' onClick={handleClose}>
+                    关闭
+                  </button>
                 </div>
-              </div>
 
-              <div className='grid gap-2'>
-                <span className='text-sm font-medium text-[color:var(--text-soft)]'>出生日期</span>
-                <CalendarDatePicker value={birthDate} onChange={setBirthDate} />
-              </div>
+                <div className='grid gap-4'>
+                  <div className='grid gap-2'>
+                    <span className='text-sm font-medium text-[color:var(--text-soft)]'>性别</span>
+                    <div className='flex flex-wrap gap-2'>
+                      {GENDER_OPTIONS.map((option) => (
+                        <button
+                          key={option.value}
+                          type='button'
+                          className={chipClassName(gender === option.value)}
+                          onClick={() => setGender(option.value)}
+                        >
+                          {option.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-              <div className='grid gap-3'>
-                <div className='grid gap-1'>
-                  <p className='text-sm font-medium text-[color:var(--text)]'>兴趣偏好</p>
-                  <p className='text-sm text-[color:var(--text-faint)]'>这些会影响任务主题和 AI 辅助表达。</p>
-                </div>
-                <div className='flex flex-wrap gap-2'>
-                  {INTEREST_TAGS.map((tag) => (
-                    <button key={tag} type='button' className={chipClassName(interestTags.includes(tag))} onClick={() => setInterestTags((current) => toggleTag(current, tag))}>
-                      {tag}
-                    </button>
-                  ))}
-                </div>
-              </div>
+                  <div className='grid gap-2'>
+                    <span className='text-sm font-medium text-[color:var(--text-soft)]'>出生日期</span>
+                    <CalendarDatePicker value={birthDate} onChange={setBirthDate} />
+                  </div>
 
-              <div className='grid gap-3'>
-                <div className='grid gap-1'>
-                  <p className='text-sm font-medium text-[color:var(--text)]'>发展特点</p>
-                  <p className='text-sm text-[color:var(--text-faint)]'>这些会帮助系统把任务难度和表达方式调得更合适。</p>
-                </div>
-                <div className='flex flex-wrap gap-2'>
-                  {DEVELOPMENT_SIGNAL_TAGS.map((tag) => (
-                    <button key={tag} type='button' className={chipClassName(developmentSignalTags.includes(tag))} onClick={() => setDevelopmentSignalTags((current) => toggleTag(current, tag))}>
-                      {tag}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
+                  <div className='grid gap-3'>
+                    <div className='grid gap-1'>
+                      <p className='text-sm font-medium text-[color:var(--text)]'>兴趣偏好</p>
+                      <p className='text-sm text-[color:var(--text-faint)]'>这些会影响任务主题和 AI 辅助表达。</p>
+                    </div>
+                    <div className='flex flex-wrap gap-2'>
+                      {INTEREST_TAGS.map((tag) => (
+                        <button key={tag} type='button' className={chipClassName(interestTags.includes(tag))} onClick={() => setInterestTags((current) => toggleTag(current, tag))}>
+                          {tag}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
 
-            <div className='flex flex-wrap items-center gap-4'>
-              <button type='button' className='primary-button disabled:cursor-not-allowed disabled:opacity-60' onClick={() => void handleSave()} disabled={isSaving}>
-                {isSaving ? '保存中...' : '保存资料'}
-              </button>
-              <button type='button' className='soft-link text-sm font-medium' onClick={handleClose}>
-                取消
-              </button>
-              {status ? <p className='text-sm text-red-700'>{status}</p> : null}
-            </div>
-          </section>
-        </div>
-      ) : null}
+                  <div className='grid gap-3'>
+                    <div className='grid gap-1'>
+                      <p className='text-sm font-medium text-[color:var(--text)]'>发展特点</p>
+                      <p className='text-sm text-[color:var(--text-faint)]'>这些会帮助系统把任务难度和表达方式调得更合适。</p>
+                    </div>
+                    <div className='flex flex-wrap gap-2'>
+                      {DEVELOPMENT_SIGNAL_TAGS.map((tag) => (
+                        <button key={tag} type='button' className={chipClassName(developmentSignalTags.includes(tag))} onClick={() => setDevelopmentSignalTags((current) => toggleTag(current, tag))}>
+                          {tag}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div className='flex flex-wrap items-center gap-4'>
+                  <button type='button' className='primary-button disabled:cursor-not-allowed disabled:opacity-60' onClick={() => void handleSave()} disabled={isSaving}>
+                    {isSaving ? '保存中...' : '保存资料'}
+                  </button>
+                  <button type='button' className='soft-link text-sm font-medium' onClick={handleClose}>
+                    取消
+                  </button>
+                  {status ? <p className='text-sm text-red-700'>{status}</p> : null}
+                </div>
+              </section>
+            </div>,
+            document.body,
+          )
+        : null}
     </>
   );
 }

@@ -19,8 +19,9 @@ import { ChildProfileForm } from './child-profile-form';
 
 function chooseBirthDate(date = '2023-08-01') {
   fireEvent.click(screen.getByRole('button', { name: '请选择出生日期' }));
-  fireEvent.change(screen.getByLabelText('出生年份'), { target: { value: '2023' } });
-  fireEvent.change(screen.getByLabelText('出生月份'), { target: { value: '8' } });
+  while (!screen.queryByRole('button', { name: date })) {
+    fireEvent.click(screen.getByRole('button', { name: '上个月' }));
+  }
   fireEvent.click(screen.getByRole('button', { name: date }));
 }
 

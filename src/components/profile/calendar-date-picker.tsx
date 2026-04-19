@@ -57,6 +57,7 @@ export function CalendarDatePicker({
     }
   }, [value]);
   const [isOpen, setIsOpen] = useState(false);
+  const [showMonthAdjuster, setShowMonthAdjuster] = useState(false);
   const [visibleMonth, setVisibleMonth] = useState(() => getMonthStart(selectedDate ?? today));
 
   useEffect(() => {
@@ -64,13 +65,13 @@ export function CalendarDatePicker({
   }, [selectedDate, today]);
 
   const days = useMemo(() => getCalendarDays(visibleMonth), [visibleMonth]);
-  const yearOptions = useMemo(
-    () => Array.from({ length: 9 }, (_, index) => today.getFullYear() - index),
-    [today],
-  );
-  const canGoNext =
-    visibleMonth.getFullYear() < today.getFullYear() ||
-    (visibleMonth.getFullYear() === today.getFullYear() && visibleMonth.getMonth() < today.getMonth());
+  const todayMonthStart = useMemo(() => getMonthStart(today), [today]);
+
+  function canMoveToMonth(year: number, month: number) {
+    return new Date(year, month, 1) <= todayMonthStart;
+  }
+
+  const canGoNext = canMoveToMonth(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1);
 
   return (
     <div className='relative'>
@@ -79,14 +80,17 @@ export function CalendarDatePicker({
         aria-haspopup='dialog'
         aria-expanded={isOpen}
         aria-label={value || label}
-        className='surface-soft flex w-full items-center justify-between px-4 py-4 text-left text-base'
-        onClick={() => setIsOpen((current) => !current)}
+        className='surface-soft flex w-full items-center justify-between px-3.5 py-3 text-left text-sm'
+        onClick={() => {
+          setIsOpen((current) => !current);
+          setShowMonthAdjuster(false);
+        }}
       >
-        <span className={value ? 'font-medium text-[color:var(--text)]' : 'text-[color:var(--text-faint)]'}>
+        <span className={value ? 'text-sm font-medium text-[color:var(--text)]' : 'text-sm text-[color:var(--text-faint)]'}>
           {value || label}
         </span>
-        <span className='inline-flex h-10 w-10 items-center justify-center rounded-full border border-[color:var(--line)] bg-[rgba(255,252,247,0.94)] text-[color:var(--text-faint)]'>
-          <svg viewBox='0 0 20 20' fill='none' className='h-5 w-5'>
+        <span className='inline-flex h-8 w-8 items-center justify-center rounded-full border border-[color:var(--line)] bg-[rgba(255,252,247,0.94)] text-[color:var(--text-faint)]'>
+          <svg viewBox='0 0 20 20' fill='none' className='h-3.5 w-3.5'>
             <path d='M5 7.5 10 12.5 15 7.5' stroke='currentColor' strokeWidth='1.6' strokeLinecap='round' />
           </svg>
         </span>
@@ -96,19 +100,22 @@ export function CalendarDatePicker({
         <div
           role='dialog'
           aria-label='出生日期选择器'
-          className='surface-panel absolute left-0 right-0 top-[calc(100%+0.75rem)] z-10 grid gap-4 p-4 sm:p-5'
+          className='surface-panel absolute left-0 top-[calc(100%+0.625rem)] z-10 grid w-[min(100%,18rem)] gap-2.5 p-2.5 sm:p-3'
         >
           <div className='flex items-start justify-between gap-4'>
             <div>
-              <p className='text-sm font-medium text-[color:var(--text)]'>选择孩子的出生日期</p>
-              <p className='mt-1 text-sm text-[color:var(--text-faint)]'>翻动月份后，直接点击日期即可。</p>
+              <p className='text-[11px] font-semibold text-[color:var(--text)]'>选择孩子的出生日期</p>
+              <p className='mt-0.5 text-[10px] text-[color:var(--text-faint)]'>翻动月份后，直接点击日期即可。</p>
             </div>
             <button
               type='button'
-              className='secondary-button px-3 py-1 text-sm'
+              aria-label='关闭日期选择器'
+              className='inline-flex h-6 w-6 items-center justify-center rounded-full border border-[color:var(--line)] bg-[rgba(255,252,247,0.98)] text-[color:var(--text-faint)] shadow-[0_8px_20px_-18px_rgba(84,63,43,0.45)] transition hover:border-[color:var(--line-strong)] hover:bg-white hover:text-[color:var(--text-soft)]'
               onClick={() => setIsOpen(false)}
             >
-              关闭
+              <svg viewBox='0 0 20 20' fill='none' className='h-3 w-3' aria-hidden='true'>
+                <path d='M6 6 14 14M14 6 6 14' stroke='currentColor' strokeWidth='1.6' strokeLinecap='round' />
+              </svg>
             </button>
           </div>
 
@@ -116,71 +123,98 @@ export function CalendarDatePicker({
             <div className='flex items-center justify-between'>
               <button
                 type='button'
-                className='secondary-button px-3 py-1 text-sm'
+                aria-label='上个月'
+                className='inline-flex h-6 w-6 items-center justify-center rounded-full border border-[color:var(--line)] bg-[rgba(255,252,247,0.98)] text-[color:var(--text-soft)] shadow-[0_8px_20px_-18px_rgba(84,63,43,0.45)] transition hover:border-[color:var(--line-strong)] hover:bg-white'
                 onClick={() => setVisibleMonth((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1))}
               >
-                上个月
+                <svg viewBox='0 0 20 20' fill='none' className='h-3 w-3'>
+                  <path d='M12.5 4.5 7 10l5.5 5.5' stroke='currentColor' strokeWidth='1.6' strokeLinecap='round' strokeLinejoin='round' />
+                </svg>
               </button>
-              <div className='flex items-center gap-2'>
-                <label className='sr-only' htmlFor='birth-year-select'>
-                  出生年份
-                </label>
-                <select
-                  id='birth-year-select'
-                  aria-label='出生年份'
-                  className='field-input min-w-[6.5rem] py-2'
-                  value={visibleMonth.getFullYear()}
-                  onChange={(event) =>
-                    setVisibleMonth(
-                      new Date(Number(event.target.value), visibleMonth.getMonth(), 1),
-                    )
-                  }
-                >
-                  {yearOptions.map((year) => (
-                    <option key={year} value={year}>
-                      {year}年
-                    </option>
-                  ))}
-                </select>
-
-                <label className='sr-only' htmlFor='birth-month-select'>
-                  出生月份
-                </label>
-                <select
-                  id='birth-month-select'
-                  aria-label='出生月份'
-                  className='field-input min-w-[5.5rem] py-2'
-                  value={visibleMonth.getMonth() + 1}
-                  onChange={(event) =>
-                    setVisibleMonth(
-                      new Date(visibleMonth.getFullYear(), Number(event.target.value) - 1, 1),
-                    )
-                  }
-                >
-                  {Array.from({ length: 12 }, (_, index) => index + 1).map((month) => (
-                    <option key={month} value={month}>
-                      {String(month).padStart(2, '0')}月
-                    </option>
-                  ))}
-                </select>
-              </div>
               <button
                 type='button'
-                className='secondary-button px-3 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50'
+                aria-label='修改年月'
+                className='rounded-full border border-[rgba(126,99,73,0.12)] bg-[rgba(255,250,244,0.94)] px-2.5 py-0.5 text-[10px] font-semibold tracking-[0.06em] text-[color:var(--text-soft)] transition hover:border-[color:var(--line-strong)] hover:bg-white'
+                onClick={() => setShowMonthAdjuster((current) => !current)}
+              >
+                {visibleMonth.getFullYear()}年 {String(visibleMonth.getMonth() + 1).padStart(2, '0')}月
+              </button>
+              <button
+                type='button'
+                aria-label='下个月'
+                className='inline-flex h-6 w-6 items-center justify-center rounded-full border border-[color:var(--line)] bg-[rgba(255,252,247,0.98)] text-[color:var(--text-soft)] shadow-[0_8px_20px_-18px_rgba(84,63,43,0.45)] transition hover:border-[color:var(--line-strong)] hover:bg-white disabled:cursor-not-allowed disabled:opacity-40'
                 disabled={!canGoNext}
                 onClick={() => setVisibleMonth((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1))}
               >
-                下个月
+                <svg viewBox='0 0 20 20' fill='none' className='h-3 w-3'>
+                  <path d='M7.5 4.5 13 10l-5.5 5.5' stroke='currentColor' strokeWidth='1.6' strokeLinecap='round' strokeLinejoin='round' />
+                </svg>
               </button>
             </div>
 
-            <div className='grid grid-cols-7 gap-2 text-center text-xs font-semibold uppercase tracking-[0.16em] text-[color:var(--text-faint)]'>
+            {showMonthAdjuster ? (
+              <div className='grid gap-1.5 rounded-2xl border border-[rgba(126,99,73,0.1)] bg-[rgba(255,252,247,0.72)] p-2'>
+                <div className='flex items-center justify-between gap-3'>
+                  <span className='text-[9px] font-semibold tracking-[0.12em] text-[color:var(--text-faint)]'>年份</span>
+                  <div className='flex items-center gap-1.5'>
+                    <button
+                      type='button'
+                      aria-label='减少年份'
+                      className='inline-flex h-5 w-5 items-center justify-center rounded-full border border-[color:var(--line)] bg-white text-[10px] text-[color:var(--text-soft)]'
+                      onClick={() => setVisibleMonth((current) => new Date(current.getFullYear() - 1, current.getMonth(), 1))}
+                    >
+                      -
+                    </button>
+                    <span className='min-w-[3.5rem] text-center text-[10px] font-medium text-[color:var(--text)]'>
+                      {visibleMonth.getFullYear()}年
+                    </span>
+                    <button
+                      type='button'
+                      aria-label='增加年份'
+                      className='inline-flex h-5 w-5 items-center justify-center rounded-full border border-[color:var(--line)] bg-white text-[10px] text-[color:var(--text-soft)] disabled:cursor-not-allowed disabled:opacity-40'
+                      disabled={!canMoveToMonth(visibleMonth.getFullYear() + 1, visibleMonth.getMonth())}
+                      onClick={() => setVisibleMonth((current) => new Date(current.getFullYear() + 1, current.getMonth(), 1))}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div className='flex items-center justify-between gap-3'>
+                  <span className='text-[9px] font-semibold tracking-[0.12em] text-[color:var(--text-faint)]'>月份</span>
+                  <div className='flex items-center gap-1.5'>
+                    <button
+                      type='button'
+                      aria-label='减少月份'
+                      className='inline-flex h-5 w-5 items-center justify-center rounded-full border border-[color:var(--line)] bg-white text-[10px] text-[color:var(--text-soft)]'
+                      onClick={() => setVisibleMonth((current) => new Date(current.getFullYear(), current.getMonth() - 1, 1))}
+                    >
+                      -
+                    </button>
+                    <span className='min-w-[2.5rem] text-center text-[10px] font-medium text-[color:var(--text)]'>
+                      {String(visibleMonth.getMonth() + 1).padStart(2, '0')}月
+                    </span>
+                    <button
+                      type='button'
+                      aria-label='增加月份'
+                      className='inline-flex h-5 w-5 items-center justify-center rounded-full border border-[color:var(--line)] bg-white text-[10px] text-[color:var(--text-soft)] disabled:cursor-not-allowed disabled:opacity-40'
+                      disabled={!canMoveToMonth(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1)}
+                      onClick={() => setVisibleMonth((current) => new Date(current.getFullYear(), current.getMonth() + 1, 1))}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+
+            <div className='grid grid-cols-7 gap-1 text-center text-[9px] font-semibold uppercase tracking-[0.1em] text-[color:var(--text-faint)]'>
               {['一', '二', '三', '四', '五', '六', '日'].map((weekday) => (
                 <span key={weekday}>{weekday}</span>
               ))}
             </div>
 
-            <div className='grid grid-cols-7 gap-2'>
+            <div className='grid grid-cols-7 gap-1'>
               {days.map((day) => {
                 const inCurrentMonth = day.getMonth() === visibleMonth.getMonth();
                 const disabled = day > today;
@@ -192,7 +226,7 @@ export function CalendarDatePicker({
                     type='button'
                     aria-label={formatCalendarDate(day)}
                     disabled={disabled}
-                    className={`rounded-2xl border px-2 py-2 text-sm transition ${
+                    className={`rounded-lg border px-1 py-1 text-[10px] transition ${
                       selected
                         ? 'border-[color:var(--accent)] bg-[color:var(--accent)] text-white'
                         : inCurrentMonth
@@ -201,6 +235,7 @@ export function CalendarDatePicker({
                     } disabled:cursor-not-allowed disabled:opacity-40`}
                     onClick={() => {
                       onChange(formatCalendarDate(day));
+                      setShowMonthAdjuster(false);
                       setIsOpen(false);
                     }}
                   >
